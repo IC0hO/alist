@@ -49,6 +49,11 @@ func ServeWebDAV(c *gin.Context) {
 func WebDAVAuth(c *gin.Context) {
 	guest, _ := op.GetGuest()
 	username, password, ok := c.Request.BasicAuth()
+	if username == "" && password == "" {
+		c.Set("user", guest)
+		c.Next()
+		return
+	}
 	if !ok {
 		bt := c.GetHeader("Authorization")
 		log.Debugf("[webdav auth] token: %s", bt)
